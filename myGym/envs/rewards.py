@@ -722,7 +722,7 @@ class ButtonReward(SwitchReward):
         w = self.calc_direction_3d(self.x_obj, self.y_obj, 1, self.x_obj, self.y_obj, self.z_obj,
                                    self.x_bot_curr_pos, self.y_bot_curr_pos, self.z_bot_curr_pos)
         d = self.abs_diff()
-        if gripper_position[2] < 0.15:
+        if gripper_position[2] < 0.17:
             d *= 5
         a = self.calc_press_reward()
         reward = - self.k_w * w - self.k_d * d + self.k_a * a
@@ -769,9 +769,10 @@ class ButtonReward(SwitchReward):
         z_diff = self.z_obj_curr_pos - self.z_bot_curr_pos
         abs_diff = sqrt(x_diff ** 2 + y_diff ** 2 + z_diff ** 2)
         return abs_diff
-
+        
     def calc_press_reward(self):
         press = (self.get_angle() *100)
+        # print('press:',press)
         if self.prev_val is None:
             self.prev_val = press
         k = press // 2
