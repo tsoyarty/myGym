@@ -594,12 +594,12 @@ class SwitchReward(DistanceReward):
             :return y: (float) The nearest point[y] to robot's gripper on the line
             :return d: (float) Distance between line and robot's gripper
         """
-        x = x1 + ((x1 - x2) * (x1 * x2 + x1 * x3 - x2 * x3 + y1 * y2 + y1 * y3 - y2 * y3 - x1 ** 2 - y1 ** 2)) / (
-                x1 ** 2 - 2 * x1 * x2 + x2 ** 2 + y1 ** 2 - 2 * y1 * y2 + y2 ** 2)
-        y = y1 + ((y1 - y2) * (x1 * x2 + x1 * x3 - x2 * x3 + y1 * y2 + y1 * y3 - y2 * y3 - x1 ** 2 - y1 ** 2)) / (
-                x1 ** 2 - 2 * x1 * x2 + x2 ** 2 + y1 ** 2 - 2 * y1 * y2 + y2 ** 2)
-        d = sqrt((x1 * y2 - x2 * y1 - x1 * y3 + x3 * y1 + x2 * y3 - x3 * y2) ** 2 / (
-                x1 ** 2 - 2 * x1 * x2 + x2 ** 2 + y1 ** 2 - 2 * y1 * y2 + y2 ** 2))
+        numer = x1 * x2 + x1 * x3 - x2 * x3 + y1 * y2 + y1 * y3 - y2 * y3 - x1 ** 2 - y1 ** 2
+        denom = x1 ** 2 - 2 * x1 * x2 + x2 ** 2 + y1 ** 2 - 2 * y1 * y2 + y2 ** 2
+        
+        x = x1 + ((x1 - x2) * numer) / denom
+        y = y1 + ((y1 - y2) * numer) / denom
+        d = sqrt((x1 * y2 - x2 * y1 - x1 * y3 + x3 * y1 + x2 * y3 - x3 * y2) ** 2 / denom)
         return [x, y, d]
 
     @staticmethod
@@ -622,17 +622,14 @@ class SwitchReward(DistanceReward):
         Returns:
             :return d: (float) Distance between line and robot's gripper
         """
-        x = x1 - ((x1 - x2) * (
-                x1 * (x1 - x2) - x3 * (x1 - x2) + y1 * (y1 - y2) - y3 * (y1 - y2) + z1 * (z1 - z2) - z3 * (
-                z1 - z2))) / ((x1 - x2) ** 2 + (y1 - y2) ** 2 + (z1 - z2) ** 2)
+        numer = (x1 * (x1 - x2) - x3 * (x1 - x2) + y1 * (y1 - y2) - y3 * (y1 - y2) + z1 * (z1 - z2) - z3 * (z1 - z2))
+        denom = ((x1 - x2) ** 2 + (y1 - y2) ** 2 + (z1 - z2) ** 2)
 
-        y = y1 - ((y1 - y2) * (
-                x1 * (x1 - x2) - x3 * (x1 - x2) + y1 * (y1 - y2) - y3 * (y1 - y2) + z1 * (z1 - z2) - z3 * (
-                z1 - z2))) / ((x1 - x2) ** 2 + (y1 - y2) ** 2 + (z1 - z2) ** 2)
+        x = x1 - ((x1 - x2) * numer) / denom
 
-        z = z1 - ((z1 - z2) * (
-                x1 * (x1 - x2) - x3 * (x1 - x2) + y1 * (y1 - y2) - y3 * (y1 - y2) + z1 * (z1 - z2) - z3 * (
-                z1 - z2))) / ((x1 - x2) ** 2 + (y1 - y2) ** 2 + (z1 - z2) ** 2)
+        y = y1 - ((y1 - y2) * numer) / denom
+
+        z = z1 - ((z1 - z2) * numer) / denom
 
         d = sqrt((x - x3) ** 2 + (y - y3) ** 2 + (z - z3) ** 2)
 
